@@ -14,11 +14,13 @@ COPY internal/ ./internal/
 
 
 # Build statically for the target OS/ARCH
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o main ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o server ./cmd/main.go
 
 # ─────── Stage 2: Minimal final image ───────
 FROM scratch
 
-COPY --from=builder /app/main /main
+COPY --from=builder /app/server /app/server
 
-ENTRYPOINT ["/main"]
+
+
+ENTRYPOINT ["/app/server"]

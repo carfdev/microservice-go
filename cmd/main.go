@@ -7,6 +7,7 @@ import (
 	"github.com/carfdev/microservice-go/internal/adapter/nats"
 	"github.com/carfdev/microservice-go/internal/application"
 	"github.com/carfdev/microservice-go/internal/config"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -14,9 +15,19 @@ func main() {
 	cfg := config.LoadConfig()
 
 	// Connect to PostgreSQL
-	gormDB, err := db.Connect(cfg.PostgresDSN)
+	var gormDB *gorm.DB
+	var err error
+
+	if cfg.AppEnv == "development" {
+		log.Println("Using development DB connection with migration")
+		gormDB, err = db.ConnectAndMigrate(cfg.PostgresDSN)
+	} else {
+		log.Println("Using production DB connection")
+		gormDB, err = config.ConnectDB(cfg.PostgresDSN)
+	}
+
 	if err != nil {
-		log.Fatalf("DB connection failed: %v", err)
+		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
 	// Connect to NATS

@@ -5,6 +5,7 @@ services:
     environment:
       - NATS_URL=nats://nats-main:4222
       - DATABASE_URL=${DATABASE_URL}
+      - APP_ENV=production
     networks:
       - my-network
     image: go-microservice

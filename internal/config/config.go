@@ -14,33 +14,53 @@ import (
 type Config struct {
 	NatsURL        string
 	PostgresDSN    string
+	AppEnv         string
 }
 
 // LoadConfig loads environment variables and returns a Config struct
 func LoadConfig() (*Config) {
-	// Load environment variables from .env file
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-		return nil
-	}
+
 
 	// Get variables from environment
 	natsURL := os.Getenv("NATS_URL")
+	postgresDSN := os.Getenv("DATABASE_URL")
+
+
+	// Try to load from .env only if one or both are missing
+	if natsURL == "" || postgresDSN == "" {
+		_ = godotenv.Load() // ignore error, might not exist in Docker
+
+		// Re-fetch after loading .env
+		if natsURL == "" {
+			natsURL = os.Getenv("NATS_URL")
+		}
+		if postgresDSN == "" {
+			postgresDSN = os.Getenv("DATABASE_URL")
+		}
+	}
+
+	appEnv := os.Getenv("APP_ENV")
+
 	if natsURL == "" {
 		log.Fatal("NATS_URL is not set in environment")
 		return nil
 	}
 
-	postgresDSN := os.Getenv("DATABASE_URL")
+	
 	if postgresDSN == "" {
 		log.Fatal("DATABASE_URL is not set in environment")
 		return nil
 	}
 
+	if appEnv == "" {
+		appEnv = "development" // default fallback
+	}
+
+
 	return &Config{
 		NatsURL:     natsURL,
 		PostgresDSN: postgresDSN,
+		AppEnv:      appEnv,
 	}
 }
 

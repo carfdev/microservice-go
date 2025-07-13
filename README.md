@@ -50,10 +50,11 @@ This is a simple **invoice microservice** built in **Go**, using:
 
 Environment variables required:
 
-| Variable       | Description                                                                  |
-| -------------- | ---------------------------------------------------------------------------- |
-| `NATS_URL`.    | NATS server URL (e.g. `nats://localhost:4222`)                               |
-| `DATABASE_URL` | PostgreSQL URL (e.g. `postgresql://postgres:secret@localhost:5432/invoices`) |
+| Variable       | Description                                                                       |
+| -------------- | --------------------------------------------------------------------------------- |
+| `NATS_URL`.    | NATS server URL (e.g. `nats://localhost:4222`)                                    |
+| `DATABASE_URL` | PostgreSQL URL (e.g. `postgresql://postgres:secret@localhost:5432/invoices`)      |
+| `APP_ENV`      | Application environment: `development` or `production` (default is `development`) |
 
 You can set them in your shell or via Docker `-e` flags.
 
@@ -70,7 +71,7 @@ docker build -t invoice-ms .
 Run the container:
 
 ```bash
-docker run -d   --name invoice-service   --network host   -e NATS_URL=nats://localhost:4222   -e DATABASE_URL="postgresql://postgres:secret@localhost:5432/invoices"   invoice-ms
+docker run -d   --name invoice-service   --network host   -e NATS_URL=nats://localhost:4222   -e DATABASE_URL="postgresql://postgres:secret@localhost:5432/invoices"  -e APP_ENV=production   invoice-ms
 ```
 
 ---

@@ -59,7 +59,7 @@ func (r *InvoiceRepository) Delete(id uuid.UUID) error {
 }
 
 // Connect to the PostgreSQL database
-func Connect(dsn string) (*gorm.DB, error) {
+func ConnectAndMigrate(dsn string) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
