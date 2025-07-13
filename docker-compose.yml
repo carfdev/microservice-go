@@ -1,0 +1,14 @@
+name: go-ms
+services:
+  go-microservice:
+    container_name: go-ms
+    environment:
+      - NATS_URL=nats://nats-main:4222
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - my-network
+    image: go-microservice
+networks:
+  my-network:
+    external: true
+    name: my-network
